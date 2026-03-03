@@ -64,7 +64,7 @@ class EditorFrame(wx.Frame):
         # 기본 폰트
         # -----------------------------
         font = wx.Font(
-            15,
+            14,
             wx.FONTFAMILY_MODERN,
             wx.FONTSTYLE_NORMAL,
             wx.FONTWEIGHT_NORMAL,
@@ -370,3 +370,53 @@ class EditorFrame(wx.Frame):
 
         self.PopupMenu(menu)
         menu.Destroy()
+
+    # -----------------------------
+    # 키 이벤트 처리
+    # -----------------------------
+    def on_console_key(self, event):
+        key = event.GetKeyCode()
+
+        if key == wx.WXK_RETURN:
+            if event.ShiftDown():
+                self.console.WriteText("\n")
+            else:
+                text = self.console.GetValue()
+
+                if text.startswith(">>> "):
+                    user_input = text[4:].strip()
+                else:
+                    user_input = text.strip()
+
+                if user_input:
+                    self.run_llm(user_input)
+
+                self.reset_console()
+        else:
+            event.Skip()
+
+    # -----------------------------
+    # LLM 호출 (비동기)
+    # -----------------------------
+    def run_llm(self, user_input):
+        def worker():
+            try:
+                document_context = self.editor.GetValue()
+                result = self.llm.process(user_input, document_context)
+
+                action = result.get("action")
+
+                if action and action != "none":
+                    wx.CallAfter(
+                        self.registry.call_tool,
+                        action,
+                        result.get("parameters", {})
+                    )
+
+            except Exception as e:
+                wx.CallAfter(
+                    self.console.AppendText,
+                    f"\n[ERROR] {str(e)}\n"
+                )
+
+        threading.Thread(target=worker, daemon=True).start()
