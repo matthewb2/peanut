@@ -34,6 +34,7 @@ class EditorFrame(wx.Frame):
         self.editor_panel = wx.Panel(self.splitter)
         self.editor = stc.StyledTextCtrl(self.editor_panel)
         self.editor.SetMarginWidth(0, 0)
+        self.editor.SetText("This is example text\n 이것은 예제 문장입니다");
 
         editor_sizer = wx.BoxSizer(wx.VERTICAL)
         editor_sizer.Add(self.editor, 1, wx.EXPAND)
@@ -85,7 +86,8 @@ class EditorFrame(wx.Frame):
         self.editor.SetWrapMode(stc.STC_WRAP_NONE)
         self.editor.SetEndAtLastLine(False)
 
-        self.editor.SetCaretLineVisible(True)
+        #커서 줄 표시
+        self.editor.SetCaretLineVisible(False)
         self.editor.SetCaretLineBackground(wx.Colour(240, 240, 240))
 
         self.editor.SetSelBackground(True, wx.Colour(0, 120, 215))
@@ -355,6 +357,10 @@ class EditorFrame(wx.Frame):
         line_number_item = menu.AppendCheckItem(
             wx.ID_ANY,
             "줄번호 표시"
+        )
+        caret_line_item = menu.AppendCheckItem(
+            wx.ID_ANY,
+            "커서 라인 표시"
         )
 
         # 현재 상태 반영
