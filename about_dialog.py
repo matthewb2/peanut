@@ -3,14 +3,14 @@ import os
 
 class AboutDialog(wx.Dialog):
     def __init__(self, parent):
-        super().__init__(parent, title="About MCP Editor", size=(420, 360))
+        super().__init__(parent, title="About Peanut Editor", size=(420, 420))
 
         panel = wx.Panel(self)
         vbox = wx.BoxSizer(wx.VERTICAL)
 
         # ===== 로고 로드 =====
         base_path = os.path.dirname(os.path.abspath(__file__))
-        logo_path = os.path.join(base_path, "assets", "logo.png")
+        logo_path = os.path.join(base_path, "peanuts.png")
 
         if os.path.exists(logo_path):
             image = wx.Image(logo_path, wx.BITMAP_TYPE_ANY)
@@ -20,7 +20,7 @@ class AboutDialog(wx.Dialog):
             vbox.Add(logo, 0, wx.ALIGN_CENTER | wx.TOP, 15)
 
         # ===== 타이틀 =====
-        title = wx.StaticText(panel, label="MCP Editor")
+        title = wx.StaticText(panel, label="Peanut Text Editor")
         font = title.GetFont()
         font.PointSize = 17
         font = font.Bold()
@@ -36,7 +36,7 @@ class AboutDialog(wx.Dialog):
 
         copyright_text = wx.StaticText(
             panel,
-            label="© 2026 MCP Project"
+            label="© 2026 Peanut Editor Project"
         )
         vbox.Add(copyright_text, 0, wx.ALIGN_CENTER | wx.BOTTOM, 20)
 

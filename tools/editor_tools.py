@@ -26,3 +26,17 @@ class EditorTools:
         text = self.text_ctrl.GetValue()
         self.text_ctrl.SetValue(text.lower())
         return {"status": "ok"}
+
+    def zoom_in(self):
+        """Zoom in the editor by one step"""
+        zoom = self.text_ctrl.GetZoom()
+        if zoom < 20:
+            self.text_ctrl.SetZoom(zoom + 1)
+        return {"status": "ok"}
+
+    def zoom_out(self):
+        """Zoom out the editor by one step"""
+        zoom = self.text_ctrl.GetZoom()
+        if zoom > -10:
+            self.text_ctrl.SetZoom(zoom - 1)
+        return {"status": "ok"}

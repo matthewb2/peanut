@@ -9,6 +9,8 @@ class ToolRegistry:
             "clear_text": self.editor_tools.clear_text,
             "to_upper": self.editor_tools.to_upper,
             "to_lower": self.editor_tools.to_lower,
+            "zoom_in": self.editor_tools.zoom_in,
+            "zoom_out": self.editor_tools.zoom_out,
         }
 
     def list_tools(self):

@@ -50,5 +50,27 @@ TOOLS = [
                 "properties": {}
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "zoom_in",
+            "description": "Zoom in the editor by one step",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "zoom_out",
+            "description": "Zoom out the editor by one step",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        }
     }
 ]

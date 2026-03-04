@@ -21,6 +21,8 @@ class EditorFrame(wx.Frame):
         self.status_bar.SetStatusText("Ln 1, Col 1", 2)
         self.status_bar.SetStatusText("100%", 3)
 
+        self.current_encoding = "utf-8"
+
         self._create_menu()
 
         panel = wx.Panel(self)
@@ -210,6 +212,34 @@ class EditorFrame(wx.Frame):
         self.assistant_toggle_item.Check(True)  # 기본 표시
         menu_bar.Append(view_menu, "보기(&V)")
 
+        # -----------------------------
+        # 인코딩 메뉴 (라디오 버튼)
+        # -----------------------------
+        encode_menu = wx.Menu()
+
+        self.ansi_item = encode_menu.Append(
+            wx.ID_ANY,
+            "ANSI",
+            kind=wx.ITEM_RADIO
+        )
+
+        self.cp949_item = encode_menu.Append(
+            wx.ID_ANY,
+            "cp949 (euc-kr)",
+            kind=wx.ITEM_RADIO
+        )
+
+        self.utf8_item = encode_menu.Append(
+            wx.ID_ANY,
+            "UTF-8",
+            kind=wx.ITEM_RADIO
+        )
+
+        # 기본 선택
+        self.utf8_item.Check(True)
+
+        menu_bar.Append(encode_menu, "인코딩(&A)")
+        
         help_menu = wx.Menu()
         about_item = help_menu.Append(wx.ID_ABOUT, "About MCP Editor\tF1")
         menu_bar.Append(help_menu, "도움말(&H)")
@@ -226,10 +256,30 @@ class EditorFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_choose_font, font_item)
         self.Bind(wx.EVT_MENU, self.on_about, about_item)
         self.Bind(wx.EVT_MENU, self.on_exit, exit_item)
+        self.Bind(wx.EVT_MENU, self.on_encoding_change, self.ansi_item)
+        self.Bind(wx.EVT_MENU, self.on_encoding_change, self.cp949_item)
+        self.Bind(wx.EVT_MENU, self.on_encoding_change, self.utf8_item)
         
         # 🔥 이 줄이 빠져 있었음
         self.Bind(wx.EVT_MENU, self.on_toggle_assistant, self.assistant_toggle_item)
 
+    # =============================
+    # 인코딩 변경
+    # =============================
+    def on_encoding_change(self, event):
+        item = event.GetEventObject().FindItemById(event.GetId())
+        encoding = item.GetItemLabel()
+
+        # 상태바 표시 변경
+        self.status_bar.SetStatusText(encoding, 1)
+
+        # 내부 변수로 저장
+        if encoding.startswith("ANSI"):
+            self.current_encoding = "latin-1"
+        elif encoding.startswith("cp949"):
+            self.current_encoding = "cp949"
+        else:
+            self.current_encoding = "utf-8"
     # =============================
     # 어시스턴트 대화창 토글
     # =============================
@@ -301,7 +351,7 @@ class EditorFrame(wx.Frame):
             path = file_dialog.GetPath()
 
             try:
-                with open(path, "w", encoding="utf-8") as f:
+                with open(path, "w", encoding=self.current_encoding) as f:
                     f.write(self.editor.GetText())
             except Exception as e:
                 wx.MessageBox(str(e), "파일 저장 오류", wx.ICON_ERROR)
